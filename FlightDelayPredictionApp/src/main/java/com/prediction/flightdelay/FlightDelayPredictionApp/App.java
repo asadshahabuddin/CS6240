@@ -52,6 +52,14 @@ public class App
     /* Main method */
     public static void main(String[] args)
     {
+        /* Calculate start time */
+        long startTime = System.nanoTime();
+
+        /* Output to console */
+        System.out.println("=======================");
+        System.out.println("FLIGHT DELAY PREDICTION");
+        System.out.println("=======================");
+
 	App logisticRegression = new App();
 
 	/* Load the input data */
@@ -65,6 +73,10 @@ public class App
 
 	/* Calculate the accuracy of my predictions */
 	logisticRegression.calcAccuracy("input/check.csv", "output");
+
+        /* Print elapsed time since last checkpoint */
+        long runningTime = (System.nanoTime - startTime) / 1000000000;
+        System.out.println("\nRunning time: " + runningTime + " second(s)");
     }
 
     /* Calculate number of days from the nearest holiday */
@@ -150,7 +162,7 @@ public class App
     /* Train a model */
     public OnlineLogisticRegression train(List<Observation> trainData)
     {
-	OnlineLogisticRegression olr = new OnlineLogisticRegression(2, 11, new L1());
+	OnlineLogisticRegression olr = new OnlineLogisticRegression(2, 10, new L1());
 
 	/* Train the model using 30 passes */
 	for (int pass = 0; pass < 50; pass++)
@@ -178,7 +190,7 @@ public class App
     }
 
     /* Predict using the specified Logistic Regression model */
-    void predict(OnlineLogisticRegression olr, String inputFile, String outputFile)
+    public void predict(OnlineLogisticRegression olr, String inputFile, String outputFile)
     {
         String line = "";
 	StringBuilder sb = new StringBuilder();
@@ -246,7 +258,7 @@ public class App
     }
 
     /* Calculate the accuracy of my prediction */
-    void calcAccuracy(String inputFile1, String inputFile2)
+    public void calcAccuracy(String inputFile1, String inputFile2)
     {
         String line = "";
 	BufferedReader br1 = null;
@@ -309,7 +321,7 @@ public class App
     }
 
     /*
-    void testModel(OnlineLogisticRegression olr)
+    public void testModel(OnlineLogisticRegression olr)
     {
         Observation newObservation = new Observation(new String[]
 						     {"family", "10", "100000", "0" });
@@ -329,7 +341,7 @@ public class App
     /* Observation class */
     class Observation
     {
-        private DenseVector vector = new DenseVector(11);
+        private DenseVector vector = new DenseVector(10);
 	private int actual;
 
 	public Observation(String[] values)
@@ -344,8 +356,7 @@ public class App
 	    vector.set(3, Double.valueOf(values[4]));                 /* Day of Week */
             vector.set(4, Double.valueOf(hourFromTime(values[31])));  /* Hour of Day */
 	    /* Number of days from the nearest holiday */
-	    vector.set(6, Double.valueOf(daysFromNearestHoliday(values[0], values[2], values[3])));
-	    vector.set(5, Double.valueOf(values[44]));                /* Arrival Delay */
+	    vector.set(5, Double.valueOf(daysFromNearestHoliday(values[0], values[2], values[3])));
 
 	    encoder.addToVector(values[14], vector);                  /* Origin */
 	    encoder.addToVector(values[6], vector);                   /* Carrier */
