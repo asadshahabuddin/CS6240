@@ -75,7 +75,7 @@ public class App
 	logisticRegression.calcAccuracy("input/check.csv", "output");
 
         /* Print elapsed time since last checkpoint */
-        long runningTime = (System.nanoTime - startTime) / 1000000000;
+        long runningTime = (System.nanoTime() - startTime) / 1000000000;
         System.out.println("\nRunning time: " + runningTime + " second(s)");
     }
 
