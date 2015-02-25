@@ -1,26 +1,32 @@
-(1) The current project runs for the minified input file '*.csv' (* signifies 
-    wildcard characters).
+>>INSTRUCTIONS
+(1) Clone the project as is.
 
-(2) In order to adapt it to the original input file (~14GB), you would need to
-    add the U.S. NATIONAL holidays for each year to the static block. I have
-    done that for 2012. For this, you need to find out all the years for which 
-    data is provided in our large input file, find a list of U.S. NATIONAL 
-    holidays for them from www.timeanddate.com and append to the aforementioned 
-    block. Please do this on your local machine and do not commit anything until
-    it is thoroughly tested. Alternatively, you can maintain as a separate file 
-    in the same package. Name it App%.java (% is a single wildcard character).
+(2) Compile it using the following command:
+    'mvn clean compile assembly:single'
+    
+    This command creates a binary from my source code and makes the JAR
+    executable.
 
-(3) The output value never comes to 1. According to my estimation, it is because
-    I have written the program in such a way that if the probability of getting 
-    0 (zero) as output is greater than or equal to 0.5 (50%), the output values 
-    invariably becomes zero. This is a terrible approximation at best and needs 
-    to be discussed.
+(3) From the project root directory, run the application as follows:
+    'java -Xmx4g -jar target/<name of jar>.jar <training file> <predict file> <output file> <check file>'
+    EXAMPLE: java -Xmx4g -jar
+             target/FlightDelayPredictionApp-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+             /home/leo/Documents/Java/MapReduce_A3/input/all.csv
+             /home/leo/Documents/Java/MapReduce_A3/input/predict.csv
+             output
+             /home/leo/Documents/Java/MapReduce_A3/input/check.csv
 
-(4) We need to convert my single-file program to a MapReduce application.
+    (a) -Xmx4g is used to set your Java heap space to 4GB. If your PC has 8GB
+        memory, you would use -Xmx8g instead.
+    (b) all.csv is my training file.
+    (c) predict.csv is the file used for predictive analysis.
+    (d) output is the name of my output file which will written to the folder
+        from where this application is executed. I ran it from project root
+        and that's where the file named 'output' was written to my file system.
+        Adjust it to your heart's content.
+    (e) check.csv is the file against which prediction accuracy is compared.
 
-(5) Testing and documentation are at 0%.
+>>TODO
+(1) We need to convert my single-file program to a MapReduce application.
 
-(6) The application needs to run from console and not just Eclipse.
-
-(7) Perform a 'Find and Replace' for '.csv' and you will find all points where
-    I have hard-coded file names. This is where you make changes.
+(2) Documentation is at 0%.

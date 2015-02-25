@@ -29,54 +29,189 @@ import org.apache.mahout.vectorizer.encoders.StaticWordValueEncoder;
 
 public class App
 {
-    private static ArrayList<Calendar> holidayList2012;
+    private static ArrayList<Calendar> holidayList;
+    private OnlineLogisticRegression olr;
+    private Observation observation;
 
     static
     {
-        /* List of holidays in 2012 */
-        /* TODO: Add holidays for all years listed in the actual input file */
-        holidayList2012 = new ArrayList<Calendar>();
-        holidayList2012.add(new GregorianCalendar(2012, 1,  1));
-        holidayList2012.add(new GregorianCalendar(2012, 1,  2));
-        holidayList2012.add(new GregorianCalendar(2012, 2,  20));
-        holidayList2012.add(new GregorianCalendar(2012, 5,  28));
-        holidayList2012.add(new GregorianCalendar(2012, 7,  4));
-        holidayList2012.add(new GregorianCalendar(2012, 9,  3));
-        holidayList2012.add(new GregorianCalendar(2012, 10, 8));
-        holidayList2012.add(new GregorianCalendar(2012, 11, 11));
-	holidayList2012.add(new GregorianCalendar(2012, 11, 12));
-	holidayList2012.add(new GregorianCalendar(2012, 11, 22));
-	holidayList2012.add(new GregorianCalendar(2012, 11, 25));
+        /* List of holidays from 1993 through 2000 */
+        holidayList = new ArrayList<Calendar>();
+
+        /* 1993 */
+        holidayList.add(new GregorianCalendar(1993, 1,  1));
+    	holidayList.add(new GregorianCalendar(1993, 1,  18));
+    	holidayList.add(new GregorianCalendar(1993, 2,  15));
+    	holidayList.add(new GregorianCalendar(1993, 5,  31));
+    	holidayList.add(new GregorianCalendar(1993, 7,  4));
+    	holidayList.add(new GregorianCalendar(1993, 7,  5));
+    	holidayList.add(new GregorianCalendar(1993, 9,  6));
+    	holidayList.add(new GregorianCalendar(1993, 10, 11));
+    	holidayList.add(new GregorianCalendar(1993, 11, 11));
+    	holidayList.add(new GregorianCalendar(1993, 11, 25));
+    	holidayList.add(new GregorianCalendar(1993, 12, 24));
+    	holidayList.add(new GregorianCalendar(1993, 12, 25));
+    	holidayList.add(new GregorianCalendar(1993, 12, 31));
+    	
+    	/* 1994 */
+    	holidayList.add(new GregorianCalendar(1994, 1,  1));
+    	holidayList.add(new GregorianCalendar(1994, 1,  17));
+    	holidayList.add(new GregorianCalendar(1994, 2,  21));
+    	holidayList.add(new GregorianCalendar(1994, 5,  30));
+    	holidayList.add(new GregorianCalendar(1994, 7,  4));
+    	holidayList.add(new GregorianCalendar(1994, 9,  5));
+    	holidayList.add(new GregorianCalendar(1994, 10, 10));
+    	holidayList.add(new GregorianCalendar(1994, 11, 11));
+    	holidayList.add(new GregorianCalendar(1994, 11, 24));
+    	holidayList.add(new GregorianCalendar(1994, 12, 25));
+    	holidayList.add(new GregorianCalendar(1994, 12, 26));
+    	
+    	/* 1995 */
+    	holidayList.add(new GregorianCalendar(1995, 1,  1));
+    	holidayList.add(new GregorianCalendar(1995, 1,  2));
+    	holidayList.add(new GregorianCalendar(1995, 1,  16));
+    	holidayList.add(new GregorianCalendar(1995, 2,  20));
+    	holidayList.add(new GregorianCalendar(1995, 5,  29));
+    	holidayList.add(new GregorianCalendar(1995, 7,  4));
+    	holidayList.add(new GregorianCalendar(1995, 9,  4));
+    	holidayList.add(new GregorianCalendar(1995, 10, 9));
+    	holidayList.add(new GregorianCalendar(1995, 11, 10));
+    	holidayList.add(new GregorianCalendar(1995, 11, 11));
+    	holidayList.add(new GregorianCalendar(1995, 11, 23));
+    	holidayList.add(new GregorianCalendar(1995, 12, 25));
+    	
+    	/* 1996 */
+    	holidayList.add(new GregorianCalendar(1996, 1,  1));
+    	holidayList.add(new GregorianCalendar(1996, 1,  15));
+    	holidayList.add(new GregorianCalendar(1996, 2,  19));
+    	holidayList.add(new GregorianCalendar(1996, 5,  27));
+    	holidayList.add(new GregorianCalendar(1996, 7,  4));
+    	holidayList.add(new GregorianCalendar(1996, 9,  2));
+    	holidayList.add(new GregorianCalendar(1996, 10, 14));
+    	holidayList.add(new GregorianCalendar(1996, 11, 11));
+    	holidayList.add(new GregorianCalendar(1996, 11, 28));
+    	holidayList.add(new GregorianCalendar(1996, 12, 25));
+    	
+    	/* 1997 */
+    	holidayList.add(new GregorianCalendar(1997, 1,  1));
+    	holidayList.add(new GregorianCalendar(1997, 1,  20));
+    	holidayList.add(new GregorianCalendar(1997, 2,  17));
+    	holidayList.add(new GregorianCalendar(1997, 5,  26));
+    	holidayList.add(new GregorianCalendar(1997, 7,  4));
+    	holidayList.add(new GregorianCalendar(1997, 9,  1));
+    	holidayList.add(new GregorianCalendar(1997, 10, 13));
+    	holidayList.add(new GregorianCalendar(1997, 11, 11));
+    	holidayList.add(new GregorianCalendar(1997, 11, 27));
+    	holidayList.add(new GregorianCalendar(1997, 12, 25));
+    	
+    	/* 1998 */
+    	holidayList.add(new GregorianCalendar(1998, 1,  1));
+    	holidayList.add(new GregorianCalendar(1998, 1,  19));
+    	holidayList.add(new GregorianCalendar(1998, 2,  16));
+    	holidayList.add(new GregorianCalendar(1998, 5,  25));
+    	holidayList.add(new GregorianCalendar(1998, 7,  3));
+    	holidayList.add(new GregorianCalendar(1998, 7,  4));
+    	holidayList.add(new GregorianCalendar(1998, 9,  7));
+    	holidayList.add(new GregorianCalendar(1998, 10, 12));
+    	holidayList.add(new GregorianCalendar(1998, 11, 11));
+    	holidayList.add(new GregorianCalendar(1998, 11, 26));
+    	holidayList.add(new GregorianCalendar(1998, 12, 25));
+    	
+    	/* 1999 */
+    	holidayList.add(new GregorianCalendar(1999, 1,  1));
+    	holidayList.add(new GregorianCalendar(1999, 1,  18));
+    	holidayList.add(new GregorianCalendar(1999, 2,  15));
+    	holidayList.add(new GregorianCalendar(1999, 5,  31));
+    	holidayList.add(new GregorianCalendar(1999, 7,  4));
+    	holidayList.add(new GregorianCalendar(1999, 7,  5));
+    	holidayList.add(new GregorianCalendar(1999, 9,  6));
+    	holidayList.add(new GregorianCalendar(1999, 10, 11));
+    	holidayList.add(new GregorianCalendar(1999, 11, 11));
+    	holidayList.add(new GregorianCalendar(1999, 11, 25));
+    	holidayList.add(new GregorianCalendar(1999, 12, 24));
+    	holidayList.add(new GregorianCalendar(1999, 12, 25));
+    	holidayList.add(new GregorianCalendar(1999, 12, 31));
+    	
+    	/* 2000 */
+    	holidayList.add(new GregorianCalendar(2000, 1,  1));
+    	holidayList.add(new GregorianCalendar(2000, 1,  17));
+    	holidayList.add(new GregorianCalendar(2000, 2,  21));
+    	holidayList.add(new GregorianCalendar(2000, 5,  29));
+    	holidayList.add(new GregorianCalendar(2000, 7,  4));
+    	holidayList.add(new GregorianCalendar(2000, 9,  4));
+    	holidayList.add(new GregorianCalendar(2000, 10, 9));
+    	holidayList.add(new GregorianCalendar(2000, 11, 10));
+    	holidayList.add(new GregorianCalendar(2000, 11, 11));
+    	holidayList.add(new GregorianCalendar(2000, 11, 23));
+    	holidayList.add(new GregorianCalendar(2000, 12, 25));
+    }
+
+    /* Constructor */
+    public App()
+    {
+        olr = new OnlineLogisticRegression(2, 11, new L1());
+        observation = null;
     }
 
     /* Main method */
     public static void main(String[] args)
     {
+        /* Perform input validation */
+        if(!validateInput(args))
+        {
+            System.exit(-1);
+        }
+
         /* Calculate start time */
         long startTime = System.nanoTime();
 
         /* Output to console */
+        System.out.println();
         System.out.println("=======================");
         System.out.println("FLIGHT DELAY PREDICTION");
         System.out.println("=======================");
 
 	App logisticRegression = new App();
 
-	/* Load the input data */
-	List<Observation> trainingData = logisticRegression.parseInputFile("input/data.csv");
-
 	/* Train a model */
-        OnlineLogisticRegression olr = logisticRegression.train(trainingData);
+        logisticRegression.train(args[0]);
+        startTime = elapsedTime(startTime, "Model has been trained");
 
 	/* Predict on the basis of my model */
-	logisticRegression.predict(olr, "input/predict.csv", "output");
+	logisticRegression.predict(args[1], args[2]);
+        startTime = elapsedTime(startTime, "Prediction completed");
 
 	/* Calculate the accuracy of my predictions */
-	logisticRegression.calcAccuracy("input/check.csv", "output");
+	logisticRegression.calcAccuracy(args[3], args[2]);
+        elapsedTime(startTime, "Correctness validation completed");
+    }
 
-        /* Print elapsed time since last checkpoint */
-        long runningTime = (System.nanoTime() - startTime) / 1000000000;
-        System.out.println("\nRunning time: " + runningTime + " second(s)");
+    /* Input validation */
+    public static boolean validateInput(String[] args)
+    {
+        if(args.length < 4)
+        {
+            System.out.println("USAGE:   App <training file> <predict file> " +
+                               "<output file> <assessment file>");
+            System.out.println("EXAMPLE: App data.csv predict.csv output check.csv");
+            return false;
+        }
+        return true;
+    }
+
+    /*
+    (1) Output time elapsed since last checkpoint
+    (2) Return start time for this checkpoint
+    */
+    public static long elapsedTime(long startTime, String message)
+    {
+        if(message != null)
+        {
+            System.out.println(message);
+        }
+        long elapsedTime = (System.nanoTime() - startTime) / 1000000000;
+        System.out.println("Elapsed time: " + elapsedTime + " second(s)");
+        return System.nanoTime();
     }
 
     /* Calculate number of days from the nearest holiday */
@@ -88,7 +223,7 @@ public class App
 	int diff = -1;
 	int minDiff = Integer.MAX_VALUE;
 
-	for(Calendar holiday : holidayList2012)
+	for(Calendar holiday : holidayList)
 	{
 	    diff = Math.abs((int)((calendar.getTimeInMillis() - holiday.getTimeInMillis()) / (1000 * 60 * 60 * 24)));	
 	    if(diff == 0)
@@ -110,93 +245,80 @@ public class App
     {
         return Integer.valueOf(String.format("%4s", time).substring(0, 2).trim());
     }
-
-    /* Parse input data from file */
-    public List<Observation> parseInputFile(String inputFile)
+    
+    /* Train a model */
+    public void train(String fileName)
     {
-        List<Observation> result = new ArrayList<Observation>();
+        System.out.println(">Training a model...");        
+
+        File file = new File(fileName);
+        if(!file.exists())
+        {
+            return;
+        }
+
+        String line = "";
+        FileReader fr = null;
         BufferedReader br = null;
-	String line = "";
 
-	try
-	{
-	    /* Load the file which contains training data */
-	    br = new BufferedReader(new FileReader(new File(inputFile)));
+        try
+        {
+            fr = new FileReader(file);
+            br = new BufferedReader(fr);
 
-	    /* Prepare observation data */
-	    while ((line = br.readLine()) != null)
-	    {
-	        String[] values = line.split(",");
-		if(values[49].equals("0"))
-		{
-		    result.add(new Observation(values));
-	        }
-	    }
-	}
-	catch (FileNotFoundException fnfe)
-	{
-	    fnfe.printStackTrace();
-	}
-	catch (IOException ioe)
-	{
-	    ioe.printStackTrace();
-	}
-	finally
-	{
-	    if (br != null)
-	    {
-		try
-		{
-		    br.close();
-		}
-		catch (IOException e)
-		{
-		    e.printStackTrace();
-		}
-	    }
-	}
-		
-	return result;
+            while((line = br.readLine()) != null)
+            {
+                trainHelper(line.split(","));
+            }
+        }
+        catch(FileNotFoundException fnfe)
+        {
+            fnfe.printStackTrace();
+        }
+        catch(IOException ioe)
+        {
+            ioe.printStackTrace();
+        }
+        finally
+        {
+            if(br != null)
+            {
+                try
+                {
+                    br.close();
+                }
+                catch(IOException ioe)
+                {
+                    ioe.printStackTrace();
+                }
+            }
+        }
     }
 
-    /* Train a model */
-    public OnlineLogisticRegression train(List<Observation> trainData)
+    /* Train a model - Helper function */
+    public void trainHelper(String[] values)
     {
-	OnlineLogisticRegression olr = new OnlineLogisticRegression(2, 10, new L1());
+        if(values.length != 63)
+        {
+            System.out.println("[warning] Weird data separation");
+            System.out.println("   [echo] There are " + values.length + " columns");
+            return;
+        }
 
-	/* Train the model using 30 passes */
-	for (int pass = 0; pass < 50; pass++)
-	{
-	    for (Observation observation : trainData)
-	    {
-	        olr.train(observation.getActual(), observation.getVector());
-	    }
-
-	    /* Every 10 passes check the accuracy of the trained model */
-	    if (pass % 10 == 0)
-	    {
-	        Auc eval = new Auc(0.5);
-		for (Observation observation : trainData)
-		{
-		    eval.add(observation.getActual(),
-		    olr.classifyScalar(observation.getVector()));
-		}
-                System.out.format("Pass: %2d, Learning rate: %2.4f, Accuracy: %2.4f\n",
-				  pass, olr.currentLearningRate(), eval.auc());
-	    }
-	}
-		
-	return olr;
+        observation = new Observation(values);
+	olr.train(observation.getActual(), observation.getVector());
     }
 
     /* Predict using the specified Logistic Regression model */
-    public void predict(OnlineLogisticRegression olr, String inputFile, String outputFile)
+    public void predict(String inputFile, String outputFile)
     {
+        System.out.println();
+        System.out.println(">Predicting arrival delays...");
+
         String line = "";
 	StringBuilder sb = new StringBuilder();
 	BufferedReader br = null;
 	BufferedWriter bw = null;
-	Observation newObservation = null;
 	Vector result = null;
 
 	try
@@ -208,8 +330,8 @@ public class App
 
 	    while((line = br.readLine()) != null)
 	    {
-	        newObservation = new Observation(line.split(","));
-		result = olr.classifyFull(newObservation.getVector());
+	        observation = new Observation(line.split(","));
+		result = olr.classifyFull(observation.getVector());
 
 		if(result.get(0) >= 0.5)
 		{
@@ -260,6 +382,9 @@ public class App
     /* Calculate the accuracy of my prediction */
     public void calcAccuracy(String inputFile1, String inputFile2)
     {
+        System.out.println();
+        System.out.println("Calculating accuracy of prediction...");
+
         String line = "";
 	BufferedReader br1 = null;
 	BufferedReader br2 = null;
@@ -316,32 +441,13 @@ public class App
 	    }
 	}
 	
-	System.out.println();
-	System.out.println("Accuracy (%): " + (float)matchCount / totalCount);
+	System.out.println("Accuracy(%): " + (float)(matchCount * 100) / totalCount);
     }
-
-    /*
-    public void testModel(OnlineLogisticRegression olr)
-    {
-        Observation newObservation = new Observation(new String[]
-						     {"family", "10", "100000", "0" });
-	Vector result = olr.classifyFull(newObservation.getVector());
-
-	System.out.println();
-	System.out.println("=======");
-	System.out.println("TESTING");
-	System.out.println("=======");
-	System.out.format("Probability of being on time (0) = %.3f\n",
-			  result.get(0));
-	System.out.format("Probability of being late (1)    = %.3f\n",
-		          result.get(1));
-    }
-    */
 
     /* Observation class */
     class Observation
     {
-        private DenseVector vector = new DenseVector(10);
+        private DenseVector vector = new DenseVector(11);
 	private int actual;
 
 	public Observation(String[] values)
@@ -354,9 +460,10 @@ public class App
 	    vector.set(1, Double.valueOf(values[2]));                 /* Month */
 	    vector.set(2, Double.valueOf(values[3]));                 /* Day of Month */
 	    vector.set(3, Double.valueOf(values[4]));                 /* Day of Week */
-            vector.set(4, Double.valueOf(hourFromTime(values[31])));  /* Hour of Day */
+            vector.set(4, Double.valueOf(hourFromTime(values[31])));  /* Hour of Day - Departure */
 	    /* Number of days from the nearest holiday */
 	    vector.set(5, Double.valueOf(daysFromNearestHoliday(values[0], values[2], values[3])));
+            vector.set(6, Double.valueOf(hourFromTime(values[42])));  /* Hour of Day - Arrival */
 
 	    encoder.addToVector(values[14], vector);                  /* Origin */
 	    encoder.addToVector(values[6], vector);                   /* Carrier */
