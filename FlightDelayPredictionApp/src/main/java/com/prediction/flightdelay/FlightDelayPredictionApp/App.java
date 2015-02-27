@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.util.GregorianCalendar;
-import java.io.FileNotFoundException;
 import org.apache.mahout.math.Vector;
 import org.apache.mahout.math.DenseVector;
 import org.apache.mahout.classifier.sgd.L1;
@@ -149,7 +148,7 @@ public class App
     /* Constructor */
     public App()
     {
-        olr = new OnlineLogisticRegression(2, 11, new L1());
+        olr = new OnlineLogisticRegression(2, 9, new L1());
         observation = null;
     }
 
@@ -196,7 +195,28 @@ public class App
             System.out.println("EXAMPLE: App data.csv predict.csv output check.csv");
             return false;
         }
-        return true;
+
+        boolean result = true;
+        File file = new File(args[0]);
+        if(!file.exists())
+        {
+            result = false;
+            System.out.println("  [error] Training file does not exist");
+        }
+        file = new File(args[1]);
+        if(!file.exists())
+        {
+            result = false;
+            System.out.println("  [error] Test file does not exist");
+        }
+        file = new File(args[3]);
+        if(!file.exists())
+        {
+            result = false;
+            System.out.println("  [error] Validation file does not exist");
+        }
+
+        return result;
     }
 
     /*
@@ -249,31 +269,18 @@ public class App
     /* Train a model */
     public void train(String fileName)
     {
-        System.out.println(">Training a model...");        
-
-        File file = new File(fileName);
-        if(!file.exists())
-        {
-            return;
-        }
+        System.out.println(">Training a model...");
 
         String line = "";
-        FileReader fr = null;
         BufferedReader br = null;
 
         try
         {
-            fr = new FileReader(file);
-            br = new BufferedReader(fr);
-
+            br = new BufferedReader(new FileReader(fileName));
             while((line = br.readLine()) != null)
             {
                 trainHelper(line.split(","));
             }
-        }
-        catch(FileNotFoundException fnfe)
-        {
-            fnfe.printStackTrace();
         }
         catch(IOException ioe)
         {
@@ -300,8 +307,10 @@ public class App
     {
         if(values.length != 63)
         {
+            /*
             System.out.println("[warning] Weird data separation");
             System.out.println("   [echo] There are " + values.length + " columns");
+            */
             return;
         }
 
@@ -323,10 +332,8 @@ public class App
 
 	try
 	{
-	    FileReader fr = new FileReader(new File(inputFile));
-	    FileWriter fw = new FileWriter(new File(outputFile));
-	    br = new BufferedReader(fr);
-            bw = new BufferedWriter(fw);
+	    br = new BufferedReader(new FileReader(inputFile));
+            bw = new BufferedWriter(new FileWriter(outputFile));
 
 	    while((line = br.readLine()) != null)
 	    {
@@ -343,10 +350,6 @@ public class App
 		}
 	    }
 	    bw.write(sb.toString());
-	}
-	catch(FileNotFoundException fnfe)
-	{
-	    fnfe.printStackTrace();
 	}
 	catch(IOException ioe)
 	{
@@ -393,10 +396,8 @@ public class App
 
 	try
 	{
-	    FileReader fr1 = new FileReader(inputFile1);
-	    FileReader fr2 = new FileReader(inputFile2);
-	    br1 = new BufferedReader(fr1);
-	    br2 = new BufferedReader(fr2);
+	    br1 = new BufferedReader(new FileReader(inputFile1));
+	    br2 = new BufferedReader(new FileReader(inputFile2));
 
 	    while((line = br1.readLine()) != null)
 	    {
@@ -406,10 +407,6 @@ public class App
 		}
 		totalCount++;
 	    }
-	}
-	catch(FileNotFoundException fnfe)
-	{
-	    fnfe.printStackTrace();
 	}
 	catch(IOException ioe)
 	{
@@ -447,7 +444,7 @@ public class App
     /* Observation class */
     class Observation
     {
-        private DenseVector vector = new DenseVector(11);
+        private DenseVector vector = new DenseVector(9);
 	private int actual;
 
 	public Observation(String[] values)
@@ -458,16 +455,14 @@ public class App
 	    interceptEncoder.addToVector("1", vector);
 	    vector.set(0, Double.valueOf(values[33]));                /* Departure delay */
 	    vector.set(1, Double.valueOf(values[2]));                 /* Month */
-	    vector.set(2, Double.valueOf(values[3]));                 /* Day of Month */
-	    vector.set(3, Double.valueOf(values[4]));                 /* Day of Week */
-            vector.set(4, Double.valueOf(hourFromTime(values[31])));  /* Hour of Day - Departure */
+	    vector.set(2, Double.valueOf(values[4]));                 /* Day of Week */
+            vector.set(3, Double.valueOf(hourFromTime(values[31])));  /* Hour of Day - Departure */
 	    /* Number of days from the nearest holiday */
-	    vector.set(5, Double.valueOf(daysFromNearestHoliday(values[0], values[2], values[3])));
-            vector.set(6, Double.valueOf(hourFromTime(values[42])));  /* Hour of Day - Arrival */
+	    vector.set(4, Double.valueOf(daysFromNearestHoliday(values[0], values[2], values[3])));
+            vector.set(5, Double.valueOf(hourFromTime(values[42])));  /* Hour of Day - Arrival */
 
 	    encoder.addToVector(values[14], vector);                  /* Origin */
 	    encoder.addToVector(values[6], vector);                   /* Carrier */
-	    encoder.addToVector(values[24], vector);                  /* Destination */
 
 	    this.actual = Integer.valueOf(values[46]);
 	}

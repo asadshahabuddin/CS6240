@@ -29,6 +29,13 @@
       <artifactId>mahout-core</artifactId>
       <version>0.9</version>
     </dependency>
+
+    <!-- OpenCSV -->
+    <dependency>
+      <groupId>net.sf.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>2.0</version>
+    </dependency>
   </dependencies>
 
   <build>
